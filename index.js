@@ -93,8 +93,17 @@ const RNSquarePos = {
 					}
 				})
 
+				const subscription = null;
+
 				function handleIOSResponse(event) {
-					Linking.removeEventListener('url', handleIOSResponse);
+					if (Linking.removeEventListener) {
+						// react-native 0.70 and below
+						Linking.removeEventListener('url', handleIOSResponse);
+					} else if (subscription) {
+						subscription.remove();
+						subscription = null;
+					}
+
 					const url = event.url
 
 					if (url.match(callbackUrl)) {
@@ -120,7 +129,7 @@ const RNSquarePos = {
 					}
 				}
 
-				Linking.addEventListener('url', handleIOSResponse);
+				subscription = Linking.addEventListener('url', handleIOSResponse);
 			}
 		})
 	},
