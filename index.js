@@ -93,7 +93,7 @@ const RNSquarePos = {
 					}
 				})
 
-				const subscription = null;
+				let subscription = null;
 
 				function handleIOSResponse(event) {
 					if (Linking.removeEventListener) {
