@@ -2,6 +2,7 @@ import { NativeModules, DeviceEventEmitter, Platform, Linking } from 'react-nati
 const SquarePOS = NativeModules.RNSquarePos
 
 let callbackUrl
+let _deviceEventEmitter = null;
 
 const errors = {
 	CANNOT_OPEN_SQUARE: 'CANNOT_OPEN_SQUARE',
@@ -55,7 +56,7 @@ const RNSquarePos = {
 				})
 
 				function handleResponse(data) {
-					DeviceEventEmitter.removeListener('RNSquarePOSResponse', handleResponse);
+					_deviceEventEmitter.remove(); 
 					if (data.errorCode) {
 						if (androidErrors[data.errorCode]) {
 							return reject({
@@ -74,7 +75,7 @@ const RNSquarePos = {
 					}
 				}
 
-				DeviceEventEmitter.addListener('RNSquarePOSResponse', handleResponse);
+				_deviceEventEmitter = DeviceEventEmitter.addListener('RNSquarePOSResponse', handleResponse);
 			} else if (Platform.OS === 'ios') {
 				SquarePOS.startTransaction(amount, currency, options, callbackUrl, (errorCode, errorDescription) => {
 					switch (errorCode) {
